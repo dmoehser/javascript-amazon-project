@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>11p Exercise</title>
+</head>
+<body>
+  
+
+  <script>
+    // 11p: Modify 11o so that if 'search' appears multiple times in the array, it will console.log() the index of the first appearance of 'search'. Use break; 
+    // - ['hello', 'world', 'search', 'good', 'search'] => console.log(2)
+
+    const array = ['hello', 'world', 'search', 'good', 'search'];  
+
+    for (let i = 0; i < array.length; i++) {
+      if (array[i] === 'search') {
+        console.log(i);
+        break;  // Beendet die Schleife nach dem ersten Fund
+      }
+    }
+
+  </script>
+</body>
+</html>
