@@ -656,5 +656,65 @@ const products = [
       "apparel",
       "mens"
     ]
+  },
+  {
+    id: "1",
+    image: "images/products/backpack.jpg",
+    name: "Black Backpack",
+    rating: {
+      stars: 4.5,
+      count: 127
+    },
+    priceCents: 4999,
+    keywords: [
+      "backpack",
+      "bags",
+      "accessories"
+    ]
+  },
+  {
+    id: "2",
+    image: "images/products/floral-mixing-bowl-set.jpg",
+    name: "Floral Mixing Bowl-Set",
+    rating: {
+      stars: 4,
+      count: 158
+    },
+    priceCents: 2999,
+    keywords: [
+      "kitchen",
+      "bowls",
+      "cooking"
+    ]
+  },
+  {
+    id: "3",
+    image: "images/products/men-slim-fit-summer-shorts-gray.jpg",
+    name: "Men Slim Fit Summer Shorts - Gray",
+    rating: {
+      stars: 4.5,
+      count: 235
+    },
+    priceCents: 7999,
+    keywords: [
+      "shorts",
+      "mens",
+      "apparel"
+    ]
+  },
+  {
+    id: "4",
+    image: "images/products/non-stick-cooking-set-15-pieces.webp",
+    name: "Non Stick Cooking Set 15-Pieces",
+    rating: {
+      stars: 4,
+      count: 89
+    },
+    priceCents: 1999,
+    keywords: [
+      "cookware",
+      "kitchen",
+      "cooking"
+    ]
   }
 ];
