@@ -1,5 +1,5 @@
 import { products } from '../data/products.js';
-import { cart } from '../data/cart.js';
+import { cart, addToCart } from '../data/cart.js';
 
 let productsHtml = '';
 
@@ -56,33 +56,6 @@ products.forEach((product) => {
 `;
 
 });
-
-function addToCart(productId, quantity) {
-  let matchingItem;
-
-  cart.forEach((item) => {
-    if (productId === item.productId) {
-      matchingItem = item;
-    }
-  });
-
-  if (matchingItem) {
-    matchingItem.quantity += quantity;
-  } else {
-    cart.push({
-      productId,
-      quantity
-    });
-  }
-
-  let cartQuantity = 0;
-  cart.forEach((item) => {
-    cartQuantity += item.quantity;
-  });
-
-  document.querySelector('.js-cart-quantity').innerHTML = cartQuantity;
-}
-
 
 document.querySelector('.js-products-grid').innerHTML = productsHtml;
 
