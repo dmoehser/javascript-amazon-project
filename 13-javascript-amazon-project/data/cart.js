@@ -1,4 +1,7 @@
-export const cart = [];
+import { products } from "./products.js";
+
+// Load cart from localStorage or initialize as empty array
+export let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
 export function addToCart(productId, quantity) {
   let matchingItem;
@@ -9,15 +12,23 @@ export function addToCart(productId, quantity) {
     }
   });
 
+  // Find the product information
+  const product = products.find(product => product.id === productId);
+
   if (matchingItem) {
     matchingItem.quantity += quantity;
   } else {
     cart.push({
       productId,
-      quantity
+      quantity: quantity,
+      product: product
     });
   }
 
+  // Save cart to localStorage
+  localStorage.setItem('cart', JSON.stringify(cart));
+
+  // Update cart quantity display
   let cartQuantity = 0;
   cart.forEach((item) => {
     cartQuantity += item.quantity;
