@@ -6,6 +6,7 @@ let cartHTML = '';
 
 cart.forEach((cartItem) => {
   const product = cartItem.product;
+  const totalPriceCents = product.priceCents * cartItem.quantity; // Berechne Gesamtpreis
   
   cartHTML += `
     <div class="cart-item-container js-cart-item-${product.id}">
@@ -22,7 +23,7 @@ cart.forEach((cartItem) => {
             ${product.name}
           </div>
           <div class="product-price">
-            $${(product.priceCents / 100).toFixed(2)}
+            $${(totalPriceCents / 100).toFixed(2)}
           </div>
           <div class="product-quantity">
             <span>
