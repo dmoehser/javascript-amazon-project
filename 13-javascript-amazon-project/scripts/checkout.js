@@ -96,10 +96,10 @@ function updateCheckoutTotals() {
   const tax = totalBeforeTax * 0.1;
   const total = totalBeforeTax + tax;
 
-  // Update all summary information with null checks
+  // Update checkout header with current item count
   const headerSection = document.querySelector('.checkout-header-middle-section');
   if (headerSection) {
-    headerSection.innerHTML = `Checkout (<a class="return-to-home-link" href="amazon.html">${totalItems} items</a>)`;
+    headerSection.innerHTML = `Checkout (<a class="return-to-home-link" href="amazon.html">${totalItems} item${totalItems === 1 ? '' : 's'}</a>)`;
   }
 
   const itemsRow = document.querySelector('.payment-summary-row:nth-child(1)');
@@ -144,3 +144,6 @@ document.querySelectorAll('.js-delete-link').forEach((link) => {
     updateCheckoutTotals();
   });
 });
+
+// Initial update of checkout totals
+updateCheckoutTotals();
