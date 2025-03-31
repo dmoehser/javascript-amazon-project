@@ -1,7 +1,8 @@
 import { cart } from '../data/cart.js';
 import { products } from '../data/products.js';
+import { formatCurrency } from './utilis/money.js';
 
-// Generiere den HTML-Code für die Produkte
+// Generate the HTML code for the products
 let cartHTML = '';
 
 cart.forEach((cartItem) => {
@@ -23,7 +24,7 @@ cart.forEach((cartItem) => {
             ${product.name}
           </div>
           <div class="product-price">
-            $${(totalPriceCents / 100).toFixed(2)}
+            $${formatCurrency(totalPriceCents)}
           </div>
           <div class="product-quantity">
             <span>
@@ -117,19 +118,19 @@ document.querySelectorAll('.js-delete-link').forEach((link) => {
 
     document.querySelector('.payment-summary-row:nth-child(1)').innerHTML = 
       `<div>Items (${totalItems}):</div>
-       <div class="payment-summary-money">$${(totalPrice / 100).toFixed(2)}</div>`;
+       <div class="payment-summary-money">$${formatCurrency(totalPrice)}</div>`;
 
     document.querySelector('.payment-summary-row:nth-child(2) .payment-summary-money').innerHTML = 
-      `$${shippingCost.toFixed(2)}`;
+      `$${formatCurrency(shippingCost * 100)}`;
 
     document.querySelector('.subtotal-row .payment-summary-money').innerHTML = 
-      `$${totalBeforeTax.toFixed(2)}`;
+      `$${formatCurrency(totalBeforeTax * 100)}`;
 
     document.querySelector('.payment-summary-row:nth-child(4) .payment-summary-money').innerHTML = 
-      `$${tax.toFixed(2)}`;
+      `$${formatCurrency(tax * 100)}`;
 
     document.querySelector('.total-row .payment-summary-money').innerHTML = 
-      `$${total.toFixed(2)}`;
+      `$${formatCurrency(total * 100)}`;
   });
 });
 
@@ -154,31 +155,31 @@ if (paymentSummary) {
     // Update items count and price
     rows[0].innerHTML = `
       <div>Items (${totalItems}):</div>
-      <div class="payment-summary-money">$${(totalPrice / 100).toFixed(2)}</div>
+      <div class="payment-summary-money">$${formatCurrency(totalPrice)}</div>
     `;
 
     // Update shipping cost
     const shippingElement = rows[1].querySelector('.payment-summary-money');
     if (shippingElement) {
-      shippingElement.innerHTML = `$${shippingCost.toFixed(2)}`;
+      shippingElement.innerHTML = `$${formatCurrency(shippingCost * 100)}`;
     }
 
     // Update subtotal
     const subtotalElement = document.querySelector('.subtotal-row .payment-summary-money');
     if (subtotalElement) {
-      subtotalElement.innerHTML = `$${totalBeforeTax.toFixed(2)}`;
+      subtotalElement.innerHTML = `$${formatCurrency(totalBeforeTax * 100)}`;
     }
 
     // Update tax
     const taxElement = rows[3].querySelector('.payment-summary-money');
     if (taxElement) {
-      taxElement.innerHTML = `$${tax.toFixed(2)}`;
+      taxElement.innerHTML = `$${formatCurrency(tax * 100)}`;
     }
 
     // Update total
     const totalElement = document.querySelector('.total-row .payment-summary-money');
     if (totalElement) {
-      totalElement.innerHTML = `$${total.toFixed(2)}`;
+      totalElement.innerHTML = `$${formatCurrency(total * 100)}`;
     }
   }
 }

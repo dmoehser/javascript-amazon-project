@@ -1,5 +1,6 @@
 import { products } from '../data/products.js';
 import { cart, addToCart } from '../data/cart.js';
+import { formatCurrency } from './utilis/money.js';
 
 // Load and display initial cart quantity
 function updateCartQuantity() {
