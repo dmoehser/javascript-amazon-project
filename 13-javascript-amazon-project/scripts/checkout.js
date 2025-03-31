@@ -1,4 +1,4 @@
-import { cart } from '../data/cart.js';
+import { cart, removeFromCart } from '../data/cart.js';
 import { products } from '../data/products.js';
 import { formatCurrency } from './utilis/money.js';
 
@@ -88,98 +88,59 @@ cart.forEach((cartItem) => {
 // Update the order summary content
 document.querySelector('.js-order-summary').innerHTML = cartHTML;
 
-// Add delete functionality
+function updateCheckoutTotals() {
+  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+  const totalPrice = cart.reduce((sum, item) => sum + item.product.priceCents * item.quantity, 0);
+  const shippingCost = 4.99;
+  const totalBeforeTax = (totalPrice / 100) + shippingCost;
+  const tax = totalBeforeTax * 0.1;
+  const total = totalBeforeTax + tax;
+
+  // Update all summary information with null checks
+  const headerSection = document.querySelector('.checkout-header-middle-section');
+  if (headerSection) {
+    headerSection.innerHTML = `Checkout (<a class="return-to-home-link" href="amazon.html">${totalItems} items</a>)`;
+  }
+
+  const itemsRow = document.querySelector('.payment-summary-row:nth-child(1)');
+  if (itemsRow) {
+    itemsRow.innerHTML = `
+      <div>Items (${totalItems}):</div>
+      <div class="payment-summary-money">$${formatCurrency(totalPrice)}</div>
+    `;
+  }
+
+  const shippingElement = document.querySelector('.payment-summary-row:nth-child(2) .payment-summary-money');
+  if (shippingElement) {
+    shippingElement.innerHTML = `$${formatCurrency(shippingCost * 100)}`;
+  }
+
+  const subtotalElement = document.querySelector('.subtotal-row .payment-summary-money');
+  if (subtotalElement) {
+    subtotalElement.innerHTML = `$${formatCurrency(totalBeforeTax * 100)}`;
+  }
+
+  const taxElement = document.querySelector('.payment-summary-row:nth-child(4) .payment-summary-money');
+  if (taxElement) {
+    taxElement.innerHTML = `$${formatCurrency(tax * 100)}`;
+  }
+
+  const totalElement = document.querySelector('.total-row .payment-summary-money');
+  if (totalElement) {
+    totalElement.innerHTML = `$${formatCurrency(total * 100)}`;
+  }
+}
+
 document.querySelectorAll('.js-delete-link').forEach((link) => {
   link.addEventListener('click', () => {
     const productId = link.dataset.productId;
     
-    // Remove item from cart
-    const newCart = cart.filter(item => item.productId !== productId);
-    cart.length = 0;
-    cart.push(...newCart);
-    
-    // Save to localStorage
-    localStorage.setItem('cart', JSON.stringify(cart));
+    removeFromCart(productId);
     
     // Remove the item from the page
     document.querySelector(`.js-cart-item-${productId}`).remove();
     
     // Update totals
-    const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-    const totalPrice = cart.reduce((sum, item) => sum + item.product.priceCents * item.quantity, 0);
-    const shippingCost = 4.99;
-    const totalBeforeTax = (totalPrice / 100) + shippingCost;
-    const tax = totalBeforeTax * 0.1;
-    const total = totalBeforeTax + tax;
-
-    // Update all summary information
-    document.querySelector('.checkout-header-middle-section').innerHTML = 
-      `Checkout (<a class="return-to-home-link" href="amazon.html">${totalItems} items</a>)`;
-
-    document.querySelector('.payment-summary-row:nth-child(1)').innerHTML = 
-      `<div>Items (${totalItems}):</div>
-       <div class="payment-summary-money">$${formatCurrency(totalPrice)}</div>`;
-
-    document.querySelector('.payment-summary-row:nth-child(2) .payment-summary-money').innerHTML = 
-      `$${formatCurrency(shippingCost * 100)}`;
-
-    document.querySelector('.subtotal-row .payment-summary-money').innerHTML = 
-      `$${formatCurrency(totalBeforeTax * 100)}`;
-
-    document.querySelector('.payment-summary-row:nth-child(4) .payment-summary-money').innerHTML = 
-      `$${formatCurrency(tax * 100)}`;
-
-    document.querySelector('.total-row .payment-summary-money').innerHTML = 
-      `$${formatCurrency(total * 100)}`;
+    updateCheckoutTotals();
   });
 });
-
-// Calculate totals
-const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-const totalPrice = cart.reduce((sum, item) => sum + item.product.priceCents * item.quantity, 0);
-const shippingCost = 4.99;
-const totalBeforeTax = (totalPrice / 100) + shippingCost;
-const tax = totalBeforeTax * 0.1;
-const total = totalBeforeTax + tax;
-
-// Update payment summary
-const headerSection = document.querySelector('.checkout-header-middle-section');
-if (headerSection) {
-  headerSection.innerHTML = `Checkout (<a class="return-to-home-link" href="amazon.html">${totalItems} items</a>)`;
-}
-
-const paymentSummary = document.querySelector('.payment-summary');
-if (paymentSummary) {
-  const rows = paymentSummary.querySelectorAll('.payment-summary-row');
-  if (rows.length > 0) {
-    // Update items count and price
-    rows[0].innerHTML = `
-      <div>Items (${totalItems}):</div>
-      <div class="payment-summary-money">$${formatCurrency(totalPrice)}</div>
-    `;
-
-    // Update shipping cost
-    const shippingElement = rows[1].querySelector('.payment-summary-money');
-    if (shippingElement) {
-      shippingElement.innerHTML = `$${formatCurrency(shippingCost * 100)}`;
-    }
-
-    // Update subtotal
-    const subtotalElement = document.querySelector('.subtotal-row .payment-summary-money');
-    if (subtotalElement) {
-      subtotalElement.innerHTML = `$${formatCurrency(totalBeforeTax * 100)}`;
-    }
-
-    // Update tax
-    const taxElement = rows[3].querySelector('.payment-summary-money');
-    if (taxElement) {
-      taxElement.innerHTML = `$${formatCurrency(tax * 100)}`;
-    }
-
-    // Update total
-    const totalElement = document.querySelector('.total-row .payment-summary-money');
-    if (totalElement) {
-      totalElement.innerHTML = `$${formatCurrency(total * 100)}`;
-    }
-  }
-}
