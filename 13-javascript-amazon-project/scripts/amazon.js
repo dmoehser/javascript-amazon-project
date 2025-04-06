@@ -1,12 +1,6 @@
+import { cart, addToCart, updateCartQuantity } from '../data/cart.js';
 import { products } from '../data/products.js';
-import { cart, addToCart } from '../data/cart.js';
 import { formatCurrency } from './utilis/money.js';
-
-// Load and display initial cart quantity
-function updateCartQuantity() {
-  const cartQuantity = cart.reduce((sum, item) => sum + item.quantity, 0);
-  document.querySelector('.js-cart-quantity').innerHTML = cartQuantity;
-}
 
 // Update cart quantity when page loads
 updateCartQuantity();

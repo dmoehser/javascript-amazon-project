@@ -2,6 +2,14 @@ import { cart, removeFromCart } from '../data/cart.js';
 import { products } from '../data/products.js';
 import { formatCurrency } from './utilis/money.js';
 
+function updateCartQuantity() {
+  const cartQuantity = cart.reduce((sum, item) => sum + item.quantity, 0);
+  const itemText = cartQuantity === 1 ? 'item' : 'items';
+  document.querySelector('.js-cart-quantity').innerHTML = `${cartQuantity} ${itemText}`;
+}
+
+updateCartQuantity();
+
 // Generate the HTML code for the products
 let cartHTML = '';
 
@@ -30,8 +38,23 @@ cart.forEach((cartItem) => {
             <span>
               Quantity: <span class="quantity-label">${cartItem.quantity}</span>
             </span>
-            <span class="update-quantity-link link-primary">
+            <select class="quantity-selector js-quantity-selector-${product.id}" style="display: none;">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+            </select>
+            <span class="update-quantity-link link-primary js-update-link" data-product-id="${product.id}">
               Update
+            </span>
+            <span class="save-quantity-link link-primary js-save-link" data-product-id="${product.id}" style="display: none;">
+              Save
             </span>
             <span class="delete-quantity-link link-primary js-delete-link" data-product-id="${product.id}">
               Delete
@@ -99,7 +122,8 @@ function updateCheckoutTotals() {
   // Update checkout header with current item count
   const headerSection = document.querySelector('.checkout-header-middle-section');
   if (headerSection) {
-    headerSection.innerHTML = `Checkout (<a class="return-to-home-link" href="amazon.html">${totalItems} item${totalItems === 1 ? '' : 's'}</a>)`;
+    const itemText = totalItems === 1 ? 'item' : 'items';
+    headerSection.innerHTML = `Checkout (<a class="return-to-home-link js-cart-quantity" href="amazon.html">${totalItems} ${itemText}</a>)`;
   }
 
   const itemsRow = document.querySelector('.payment-summary-row:nth-child(1)');
@@ -134,14 +158,65 @@ function updateCheckoutTotals() {
 document.querySelectorAll('.js-delete-link').forEach((link) => {
   link.addEventListener('click', () => {
     const productId = link.dataset.productId;
-    
     removeFromCart(productId);
-    
-    // Remove the item from the page
     document.querySelector(`.js-cart-item-${productId}`).remove();
-    
-    // Update totals
     updateCheckoutTotals();
+    updateCartQuantity();
+  });
+});
+
+// Add event listeners for update links
+document.querySelectorAll('.js-update-link').forEach((link) => {
+  link.addEventListener('click', () => {
+    const productId = link.dataset.productId;
+    
+    // Hide update link and quantity label, show save link and selector
+    link.style.display = 'none';
+    document.querySelector(`.js-save-link[data-product-id="${productId}"]`).style.display = 'inline';
+    
+    const container = link.closest('.product-quantity');
+    const quantityLabel = container.querySelector('.quantity-label');
+    const quantitySelector = container.querySelector(`.js-quantity-selector-${productId}`);
+    
+    // Set current quantity in selector
+    quantitySelector.value = quantityLabel.textContent;
+    
+    quantityLabel.parentElement.style.display = 'none';
+    quantitySelector.style.display = 'inline-block';
+  });
+});
+
+// Add event listeners for save links
+document.querySelectorAll('.js-save-link').forEach((link) => {
+  link.addEventListener('click', () => {
+    const productId = link.dataset.productId;
+    const container = link.closest('.product-quantity');
+    const quantitySelector = container.querySelector(`.js-quantity-selector-${productId}`);
+    const newQuantity = Number(quantitySelector.value);
+    
+    // Update cart data
+    cart.forEach((item) => {
+      if (item.product.id === productId) {
+        item.quantity = newQuantity;
+      }
+    });
+    
+    // Save to localStorage
+    localStorage.setItem('cart', JSON.stringify(cart));
+    
+    // Update display
+    const quantityLabel = container.querySelector('.quantity-label');
+    quantityLabel.textContent = newQuantity;
+    
+    // Show/hide elements
+    link.style.display = 'none';
+    document.querySelector(`.js-update-link[data-product-id="${productId}"]`).style.display = 'inline';
+    quantitySelector.style.display = 'none';
+    quantityLabel.parentElement.style.display = 'inline';
+    
+    // Update totals and cart quantity
+    updateCheckoutTotals();
+    updateCartQuantity();
   });
 });
 

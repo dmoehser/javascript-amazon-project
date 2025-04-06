@@ -2,6 +2,7 @@ import { products } from "./products.js";
 
 // Load cart from localStorage or initialize as empty array
 export let cart = JSON.parse(localStorage.getItem('cart')) || [];
+console.log('Initial cart:', cart); // Debug log
 
 export function addToCart(productId, quantity) {
   let matchingItem;
@@ -40,10 +41,10 @@ function saveCart() {
   updateCartQuantity();
 }
 
-function updateCartQuantity() {
+export function updateCartQuantity() {
   const cartQuantityElement = document.querySelector('.js-cart-quantity');
   if (cartQuantityElement) { 
     const cartQuantity = cart.reduce((sum, item) => sum + item.quantity, 0);
-    cartQuantityElement.innerHTML = cartQuantity;
+    cartQuantityElement.innerHTML = cartQuantity === 0 ? '' : cartQuantity;
   }
 }
