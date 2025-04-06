@@ -1,9 +1,9 @@
-import { cart, removeFromCart } from '../data/cart.js';
+import { cart, removeFromCart, calculateCartQuantity } from '../data/cart.js';
 import { products } from '../data/products.js';
 import { formatCurrency } from './utilis/money.js';
 
 function updateCartQuantity() {
-  const cartQuantity = cart.reduce((sum, item) => sum + item.quantity, 0);
+  const cartQuantity = calculateCartQuantity();
   const itemText = cartQuantity === 1 ? 'item' : 'items';
   document.querySelector('.js-cart-quantity').innerHTML = `${cartQuantity} ${itemText}`;
 }
@@ -38,18 +38,9 @@ cart.forEach((cartItem) => {
             <span>
               Quantity: <span class="quantity-label">${cartItem.quantity}</span>
             </span>
-            <select class="quantity-selector js-quantity-selector-${product.id}" style="display: none;">
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-              <option value="6">6</option>
-              <option value="7">7</option>
-              <option value="8">8</option>
-              <option value="9">9</option>
-              <option value="10">10</option>
-            </select>
+            <input type="number" class="quantity-input js-quantity-selector-${product.id}" 
+              style="display: none;"
+              min="1" max="999" value="${cartItem.quantity}">
             <span class="update-quantity-link link-primary js-update-link" data-product-id="${product.id}">
               Update
             </span>
@@ -112,7 +103,7 @@ cart.forEach((cartItem) => {
 document.querySelector('.js-order-summary').innerHTML = cartHTML;
 
 function updateCheckoutTotals() {
-  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+  const totalItems = calculateCartQuantity();
   const totalPrice = cart.reduce((sum, item) => sum + item.product.priceCents * item.quantity, 0);
   const shippingCost = 4.99;
   const totalBeforeTax = (totalPrice / 100) + shippingCost;
@@ -183,6 +174,18 @@ document.querySelectorAll('.js-update-link').forEach((link) => {
     
     quantityLabel.parentElement.style.display = 'none';
     quantitySelector.style.display = 'inline-block';
+    
+    // Focus the input field and select its content
+    quantitySelector.focus();
+    quantitySelector.select();
+    
+    // Add keyboard event listener
+    quantitySelector.addEventListener('keypress', (event) => {
+      if (event.key === 'Enter') {
+        // Trigger click on the corresponding save link
+        document.querySelector(`.js-save-link[data-product-id="${productId}"]`).click();
+      }
+    });
   });
 });
 
@@ -192,7 +195,17 @@ document.querySelectorAll('.js-save-link').forEach((link) => {
     const productId = link.dataset.productId;
     const container = link.closest('.product-quantity');
     const quantitySelector = container.querySelector(`.js-quantity-selector-${productId}`);
-    const newQuantity = Number(quantitySelector.value);
+    
+    // Get original quantity from cart
+    const originalQuantity = cart.find(item => item.product.id === productId)?.quantity || 1;
+    let newQuantity = Number(quantitySelector.value);
+    
+    // Validate the input
+    if (isNaN(newQuantity) || newQuantity < 1 || quantitySelector.value.trim() === '') {
+      newQuantity = originalQuantity;
+    } else if (newQuantity > 999) {
+      newQuantity = 999;
+    }
     
     // Update cart data
     cart.forEach((item) => {

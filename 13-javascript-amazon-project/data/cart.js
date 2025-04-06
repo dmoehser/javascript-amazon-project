@@ -4,6 +4,18 @@ import { products } from "./products.js";
 export let cart = JSON.parse(localStorage.getItem('cart')) || [];
 console.log('Initial cart:', cart); // Debug log
 
+export function calculateCartQuantity() {
+  return cart.reduce((sum, item) => sum + item.quantity, 0);
+}
+
+export function updateCartQuantity() {
+  const cartQuantityElement = document.querySelector('.js-cart-quantity');
+  if (cartQuantityElement) { 
+    const cartQuantity = calculateCartQuantity();
+    cartQuantityElement.innerHTML = cartQuantity === 0 ? '' : cartQuantity;
+  }
+}
+
 export function addToCart(productId, quantity) {
   let matchingItem;
 
@@ -39,12 +51,4 @@ export function removeFromCart(productId) {
 function saveCart() {
   localStorage.setItem('cart', JSON.stringify(cart));
   updateCartQuantity();
-}
-
-export function updateCartQuantity() {
-  const cartQuantityElement = document.querySelector('.js-cart-quantity');
-  if (cartQuantityElement) { 
-    const cartQuantity = cart.reduce((sum, item) => sum + item.quantity, 0);
-    cartQuantityElement.innerHTML = cartQuantity === 0 ? '' : cartQuantity;
-  }
 }

@@ -119,6 +119,25 @@
   margin-left: 3px;
 }
 
+.quantity-input {
+  width: 30px;
+  margin: 0 5px;
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+}
+
+/* Remove arrows for Chrome, Safari, Edge, Opera */
+.quantity-input::-webkit-outer-spin-button,
+.quantity-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Remove arrows for Firefox */
+.quantity-input[type=number] {
+  -moz-appearance: textfield;
+}
+
 @media (max-width: 1000px) {
   .delivery-options {
     /* grid-column: 1 means this element will be placed
