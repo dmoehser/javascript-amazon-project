@@ -19,10 +19,15 @@ cart.forEach((cartItem) => {
   const product = cartItem.product;
   const totalPriceCents = product.priceCents * cartItem.quantity;
   
+  // Find the selected delivery option
+  const selectedDeliveryOption = deliveryOptions.find(option => option.id === cartItem.deliveryOptionId);
+  const deliveryDate = calculateDeliveryDate(selectedDeliveryOption.deliveryDays);
+  const formattedDeliveryDate = deliveryDate.format('dddd, MMMM D');
+  
   cartHTML += `
     <div class="cart-item-container js-cart-item-${product.id}">
       <div class="delivery-date">
-        Delivery date: Wednesday, June 15
+        Delivery date: ${formattedDeliveryDate}
       </div>
 
       <div class="cart-item-details-grid">
@@ -96,6 +101,16 @@ document.querySelectorAll('.js-delivery-option').forEach((option) => {
     
     // Update delivery option in cart
     updateDeliveryOption(productId, selectedOptionId);
+    
+    // Update the delivery date
+    const selectedDeliveryOption = deliveryOptions.find(option => option.id === selectedOptionId);
+    const deliveryDate = calculateDeliveryDate(selectedDeliveryOption.deliveryDays);
+    const formattedDeliveryDate = deliveryDate.format('dddd, MMMM D');
+    
+    const cartItemContainer = document.querySelector(`.js-cart-item-${productId}`);
+    const deliveryDateElement = cartItemContainer.querySelector('.delivery-date');
+    deliveryDateElement.textContent = `Delivery date: ${formattedDeliveryDate}`;
+    
     updateCheckoutTotals();
   });
 });
