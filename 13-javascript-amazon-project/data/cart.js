@@ -2,7 +2,6 @@ import { products } from "./products.js";
 
 // Load cart from localStorage or initialize as empty array
 export let cart = JSON.parse(localStorage.getItem('cart')) || [];
-console.log('Initial cart:', cart); // Debug log
 
 export function calculateCartQuantity() {
   return cart.reduce((sum, item) => sum + item.quantity, 0);
@@ -16,7 +15,7 @@ export function updateCartQuantity() {
   }
 }
 
-export function addToCart(productId, quantity) {
+export function addToCart(productId, quantity, deliveryOptionId = '1') {
   let matchingItem;
 
   cart.forEach((item) => {
@@ -33,6 +32,7 @@ export function addToCart(productId, quantity) {
     cart.push({
       productId,
       quantity: quantity,
+      deliveryOptionId: deliveryOptionId,
       product: product
     });
   }
@@ -46,6 +46,15 @@ export function removeFromCart(productId) {
   cart.push(...newCart);
   
   saveCart();
+}
+
+export function updateDeliveryOption(productId, deliveryOptionId) {
+  const cartItem = cart.find(item => item.productId === productId);
+  if (cartItem) {
+    cartItem.deliveryOptionId = deliveryOptionId;
+    delete cartItem.deliveryOptionsId;
+    saveCart();
+  }
 }
 
 function saveCart() {

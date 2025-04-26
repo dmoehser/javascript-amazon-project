@@ -75,8 +75,6 @@ document.querySelectorAll('.js-add-to-cart').forEach((button) => {
     // Stelle sicher, dass die Menge als Zahl gelesen wird
     const quantity = parseInt(quantitySelector.value, 10);
     
-    // Debug-Ausgabe
-    console.log(`Adding ${quantity} items of product ${productId}`);
     
     addToCart(productId, quantity);
 

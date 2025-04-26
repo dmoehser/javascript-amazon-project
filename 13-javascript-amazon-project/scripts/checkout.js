@@ -1,6 +1,8 @@
-import { cart, removeFromCart, calculateCartQuantity } from '../data/cart.js';
+import { cart, removeFromCart, calculateCartQuantity, updateDeliveryOption } from '../data/cart.js';
 import { products } from '../data/products.js';
+import { deliveryOptions } from '../data/deliveryOptions.js';
 import { formatCurrency } from './utilis/money.js';
+import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js';
 
 function updateCartQuantity() {
   const cartQuantity = calculateCartQuantity();
@@ -15,7 +17,7 @@ let cartHTML = '';
 
 cart.forEach((cartItem) => {
   const product = cartItem.product;
-  const totalPriceCents = product.priceCents * cartItem.quantity; // Calculate total
+  const totalPriceCents = product.priceCents * cartItem.quantity;
   
   cartHTML += `
     <div class="cart-item-container js-cart-item-${product.id}">
@@ -57,42 +59,7 @@ cart.forEach((cartItem) => {
           <div class="delivery-options-title">
             Choose a delivery option:
           </div>
-          <div class="delivery-option">
-            <input type="radio" class="delivery-option-input"
-              name="delivery-option-${product.id}">
-            <div>
-              <div class="delivery-option-date">
-                Tuesday, June 21
-              </div>
-              <div class="delivery-option-price">
-                FREE Shipping
-              </div>
-            </div>
-          </div>
-          <div class="delivery-option">
-            <input type="radio" checked class="delivery-option-input"
-              name="delivery-option-${product.id}">
-            <div>
-              <div class="delivery-option-date">
-                Wednesday, June 15
-              </div>
-              <div class="delivery-option-price">
-                $4.99 - Shipping
-              </div>
-            </div>
-          </div>
-          <div class="delivery-option">
-            <input type="radio" class="delivery-option-input"
-              name="delivery-option-${product.id}">
-            <div>
-              <div class="delivery-option-date">
-                Monday, June 13
-              </div>
-              <div class="delivery-option-price">
-                $9.99 - Shipping
-              </div>
-            </div>
-          </div>
+          ${generateDeliveryOptionsHTML(product.id, cartItem.deliveryOptionId)}
         </div>
       </div>
     </div>
@@ -102,50 +69,38 @@ cart.forEach((cartItem) => {
 // Update the order summary content
 document.querySelector('.js-order-summary').innerHTML = cartHTML;
 
-function updateCheckoutTotals() {
-  const totalItems = calculateCartQuantity();
-  const totalPrice = cart.reduce((sum, item) => sum + item.product.priceCents * item.quantity, 0);
-  const shippingCost = 4.99;
-  const totalBeforeTax = (totalPrice / 100) + shippingCost;
-  const tax = totalBeforeTax * 0.1;
-  const total = totalBeforeTax + tax;
-
-  // Update checkout header with current item count
-  const headerSection = document.querySelector('.checkout-header-middle-section');
-  if (headerSection) {
-    const itemText = totalItems === 1 ? 'item' : 'items';
-    headerSection.innerHTML = `Checkout (<a class="return-to-home-link js-cart-quantity" href="amazon.html">${totalItems} ${itemText}</a>)`;
+// Initialize delivery options for each cart item
+cart.forEach((cartItem) => {
+  if (cartItem.deliveryOptionsId) {
+    delete cartItem.deliveryOptionsId;
   }
-
-  const itemsRow = document.querySelector('.payment-summary-row:nth-child(1)');
-  if (itemsRow) {
-    itemsRow.innerHTML = `
-      <div>Items (${totalItems}):</div>
-      <div class="payment-summary-money">$${formatCurrency(totalPrice)}</div>
-    `;
+  
+  if (!cartItem.deliveryOptionId) {
+    cartItem.deliveryOptionId = '1'; // Default to first option
+    updateDeliveryOption(cartItem.productId, '1');
   }
+});
 
-  const shippingElement = document.querySelector('.payment-summary-row:nth-child(2) .payment-summary-money');
-  if (shippingElement) {
-    shippingElement.innerHTML = `$${formatCurrency(shippingCost * 100)}`;
-  }
+// Add event listeners for delivery options
+document.querySelectorAll('.js-delivery-option').forEach((option) => {
+  option.addEventListener('click', (event) => {
+    // Prevent triggering the event twice if clicking the radio button
+    if (event.target.type === 'radio') return;
+    
+    const productId = option.dataset.productId;
+    const selectedOptionId = option.dataset.optionId;
+    
+    // Update the radio button
+    const radioInput = option.querySelector('.delivery-option-input');
+    radioInput.checked = true;
+    
+    // Update delivery option in cart
+    updateDeliveryOption(productId, selectedOptionId);
+    updateCheckoutTotals();
+  });
+});
 
-  const subtotalElement = document.querySelector('.subtotal-row .payment-summary-money');
-  if (subtotalElement) {
-    subtotalElement.innerHTML = `$${formatCurrency(totalBeforeTax * 100)}`;
-  }
-
-  const taxElement = document.querySelector('.payment-summary-row:nth-child(4) .payment-summary-money');
-  if (taxElement) {
-    taxElement.innerHTML = `$${formatCurrency(tax * 100)}`;
-  }
-
-  const totalElement = document.querySelector('.total-row .payment-summary-money');
-  if (totalElement) {
-    totalElement.innerHTML = `$${formatCurrency(total * 100)}`;
-  }
-}
-
+// Add event listeners for delete links
 document.querySelectorAll('.js-delete-link').forEach((link) => {
   link.addEventListener('click', () => {
     const productId = link.dataset.productId;
@@ -233,5 +188,110 @@ document.querySelectorAll('.js-save-link').forEach((link) => {
   });
 });
 
-// Initial update of checkout totals
+function updateCheckoutTotals() {
+  const totalItems = calculateCartQuantity();
+  const totalPrice = cart.reduce((sum, item) => sum + item.product.priceCents * item.quantity, 0);
+  
+  // Calculate shipping costs
+  const uniqueProductIds = new Set();
+  const shippingCost = cart.reduce((sum, item) => {
+    // Skip if we've already calculated shipping for this product ID
+    if (uniqueProductIds.has(item.product.id)) {
+      return sum;
+    }
+    
+    // Mark this product ID as processed
+    uniqueProductIds.add(item.product.id);
+    
+    const deliveryOption = deliveryOptions.find(option => option.id === item.deliveryOptionId);
+    return sum + (deliveryOption ? deliveryOption.priceCents : 0);
+  }, 0);
+  
+  const totalBeforeTax = (totalPrice / 100) + (shippingCost / 100);
+  const tax = totalBeforeTax * 0.1;
+  const total = totalBeforeTax + tax;
+
+  // Update checkout header with current item count
+  const headerSection = document.querySelector('.checkout-header-middle-section');
+  if (headerSection) {
+    const itemText = totalItems === 1 ? 'item' : 'items';
+    headerSection.innerHTML = `Checkout (<a class="return-to-home-link js-cart-quantity" href="amazon.html">${totalItems} ${itemText}</a>)`;
+  }
+
+  // Update items row
+  const itemsRow = document.querySelector('.js-items-row');
+  if (itemsRow) {
+    itemsRow.innerHTML = `
+      <div>Items (${totalItems}):</div>
+      <div class="payment-summary-money">$${formatCurrency(totalPrice)}</div>
+    `;
+  }
+
+  // Update shipping cost
+  const shippingElement = document.querySelector('.js-shipping-cost');
+  if (shippingElement) {
+    shippingElement.textContent = `$${formatCurrency(shippingCost)}`;
+  }
+
+  // Update subtotal
+  const subtotalElement = document.querySelector('.js-subtotal');
+  if (subtotalElement) {
+    subtotalElement.textContent = `$${formatCurrency(totalBeforeTax * 100)}`;
+  }
+
+  // Update tax
+  const taxElement = document.querySelector('.js-tax');
+  if (taxElement) {
+    taxElement.textContent = `$${formatCurrency(tax * 100)}`;
+  }
+
+  // Update total
+  const totalElement = document.querySelector('.js-total');
+  if (totalElement) {
+    totalElement.textContent = `$${formatCurrency(total * 100)}`;
+  }
+}
+
+// Initialize totals
 updateCheckoutTotals();
+
+// Get current date and time object
+const today = dayjs();
+
+const deliveryDate = today.add(7, 'days');
+
+function calculateDeliveryDate(deliveryDays) {
+  const today = dayjs();
+  return today.add(deliveryDays, 'days');
+}
+
+function generateDeliveryOptionsHTML(productId, selectedDeliveryOptionId) {
+  let html = '';
+  
+  deliveryOptions.forEach((option) => {
+    const deliveryDate = calculateDeliveryDate(option.deliveryDays);
+    const dateString = deliveryDate.format('dddd, MMMM D');
+    const priceString = option.priceCents === 0 ? 'FREE' : `$${formatCurrency(option.priceCents)}`;
+    
+    html += `
+      <div class="delivery-option js-delivery-option" data-product-id="${productId}" data-option-id="${option.id}">
+        <input type="radio" 
+          class="delivery-option-input"
+          name="delivery-option-${productId}"
+          value="${option.id}"
+          ${option.id === selectedDeliveryOptionId ? 'checked' : ''}>
+        <div>
+          <div class="delivery-option-date">
+            ${dateString}
+          </div>
+          <div class="delivery-option-price">
+            ${priceString} Shipping
+          </div>
+        </div>
+      </div>
+    `;
+  });
+  
+  return html;
+}
+
