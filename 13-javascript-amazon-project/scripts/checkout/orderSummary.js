@@ -3,6 +3,7 @@ import { products } from '../../data/products.js';
 import { deliveryOptions } from '../../scripts/deliveryOptions.js';
 import { formatCurrency } from '../utilis/money.js';
 import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js';
+import { renderCheckoutHeader } from './checkoutHeader.js';
 
 function updateCartQuantity() {
   const cartQuantity = calculateCartQuantity();
@@ -77,6 +78,7 @@ function renderOrder() {
 updateCartQuantity();
 renderOrder();
 updateCheckoutTotals();
+renderCheckoutHeader();
 
 // Initialize delivery options for each cart item
 cart.forEach((cartItem) => {
@@ -233,11 +235,7 @@ function updateCheckoutTotals() {
   const total = totalBeforeTax + tax;
 
   // Update checkout header with current item count
-  const headerSection = document.querySelector('.checkout-header-middle-section');
-  if (headerSection) {
-    const itemText = totalItems === 1 ? 'item' : 'items';
-    headerSection.innerHTML = `Checkout (<a class="return-to-home-link js-cart-quantity" href="amazon.html">${totalItems} ${itemText}</a>)`;
-  }
+  renderCheckoutHeader();
 
   // Update items row
   const itemsRow = document.querySelector('.js-items-row');
