@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>15f</title>
+</head>
+<body>
+    <h1>Weekend Checker (importiert)</h1>
+    <div id="results"></div>
+
+    <script type="module">
+        import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js';
+        import irgendwas from './isWeekend.js';
+        
+        // Test using different dates
+        let date = dayjs();
+        console.log(date.format('dddd, MMMM D'));
+        console.log(irgendwas(date));
+
+        date = dayjs().add(2, 'day');
+        console.log(date.format('dddd, MMMM D'));
+        console.log(irgendwas(date));
+
+        date = dayjs().add(8, 'day');
+        console.log(date.format('dddd, MMMM D'));
+        console.log(irgendwas(date));
+
+        date = dayjs().add(28, 'day');
+        console.log(date.format('dddd, MMMM D'));
+        console.log(irgendwas(date));
+
+        // HTML Output
+        const resultsDiv = document.getElementById('results');
+        let htmlOutput = '';
+
+        date = dayjs();
+        htmlOutput += `<p>${date.format('dddd, MMMM D')} - Wochenende: ${irgendwas(date)}</p>`;
+
+        date = dayjs().add(2, 'day');
+        htmlOutput += `<p>${date.format('dddd, MMMM D')} - Wochenende: ${irgendwas(date)}</p>`;
+
+        date = dayjs().add(8, 'day');
+        htmlOutput += `<p>${date.format('dddd, MMMM D')} - Wochenende: ${irgendwas(date)}</p>`;
+
+        date = dayjs().add(28, 'day');
+        htmlOutput += `<p>${date.format('dddd, MMMM D')} - Wochenende: ${irgendwas(date)}</p>`;
+
+        resultsDiv.innerHTML = htmlOutput;
+    </script>
+</body>
+</html>
