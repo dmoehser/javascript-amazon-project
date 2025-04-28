@@ -70,6 +70,7 @@ function renderOrder() {
   });
 
   document.querySelector('.js-order-summary').innerHTML = cartHTML;
+  setupDeleteListeners();
 }
 
 // Initialize the page
@@ -118,16 +119,18 @@ document.querySelectorAll('.js-delivery-option').forEach((option) => {
   });
 });
 
-// Add event listeners for delete links
-document.querySelectorAll('.js-delete-link').forEach((link) => {
-  link.addEventListener('click', () => {
-    const productId = link.dataset.productId;
-    removeFromCart(productId);
-    document.querySelector(`.js-cart-item-${productId}`).remove();
-    updateCheckoutTotals();
-    updateCartQuantity();
+// Set up delete event listeners for all delete links
+function setupDeleteListeners() {
+  document.querySelectorAll('.js-delete-link').forEach((link) => {
+    link.addEventListener('click', () => {
+      const productId = link.dataset.productId;
+      removeFromCart(productId);
+      renderOrder();
+      updateCheckoutTotals();
+      updateCartQuantity();
+    });
   });
-});
+}
 
 // Add event listeners for update links
 document.querySelectorAll('.js-update-link').forEach((link) => {
