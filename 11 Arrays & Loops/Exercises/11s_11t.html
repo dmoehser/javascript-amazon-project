@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>11r - 11t Exercise</title>
+</head>
+<body>
+  
+
+  <script>
+    //11r: Create a function removeEgg(foods) that take an array of strings and returns an array where the string is 'egg' is removed. (Hint: loop through the array and check if the current element is 'egg'. If it is, use continue to skip it.)
+    // - removeEgg(['egg', 'apple', 'egg', 'banana', 'egg', 'orange']) => ['apple', 'banana', 'orange']
+  
+  //11s: Update the code to remove only the first two 'eggs' from the array.
+  // - removeEgg(['egg', 'apple', 'egg', 'banana', 'egg', 'orange']) => ['apple', 'banana', 'egg', 'orange']
+
+  //11t: Arrays have a method called .reverse(), which reverse the order of the values in the array. Using .reverse() update the above code only to remove the last 2 eggs from the array. 
+
+
+  function removeLastTwoEggs(foods) {
+  foods.reverse();
+  let eggsRemoved = 0;
+
+  const result = foods.filter(food => {
+    if (food === 'egg' && eggsRemoved < 2) {
+      eggsRemoved++;
+      return false;
+    }
+    return true;
+  });
+
+  return result; // Ohne reverse
+}
+
+console.log(removeLastTwoEggs(['egg', 'apple', 'egg', 'banana', 'egg', 'orange']));
+  </script>
+</body>
+</html>

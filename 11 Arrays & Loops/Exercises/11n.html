@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>11N Exercise</title>
+</head>
+<body>
+
+
+
+  <script>
+    // 11n: Create a function countWords(words) that takes an array of strings and returns an object with how many times each string appeared.
+    // - countWords (['apple', 'banana', 'apple', 'orange', 'banana', 'apple']) => {apple: 3, banana: 2, orange: 1}
+
+    function countWords(words) {
+      const wordCount = {
+        total: words.length 
+      };
+
+      for (const word of words) {
+        wordCount[word] = (wordCount[word] || 0) + 1;
+      }
+
+      return wordCount;
+    }
+
+    const words = ['apple', 'banana', 'apple', 'orange', 'banana', 'apple', 'orange'];
+    const result = countWords(words);
+    console.log(result);  
+    console.log('Total:', result.total, 'Words.'); 
+  
+
+  </script>
+</body>
+

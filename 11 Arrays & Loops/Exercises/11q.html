@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>11p Exercise</title>
+</head>
+<body>
+  
+
+  <script>
+    // 11q: Create a function findIndex(array, word) that searches an array for a string (in the 'word' parameter) and returns the index of the first appearance of the string. If the string is not found, return -1.
+    // - findIndex(['green', 'red', 'blue', 'red'], 'red') => 1
+    // - findIndex(['green', 'red', 'blue', 'red'], 'yellow') => -1
+
+    function findIndex(array, word) {
+      for (let i = 0; i < array.length; i++) {
+        if (array[i] === word) {
+          return i;
+        }
+      }
+      return -1;
+    }
+
+    console.log(findIndex(['green', 'red', 'blue', 'red'], 'red'));
+    console.log(findIndex(['green', 'red', 'blue', 'red'], 'yellow'));
+  </script>
+</body>
+</html>

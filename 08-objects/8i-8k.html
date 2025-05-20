@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>8i-8k-Exercise</title>
+  </head>
+  <body>
+    <button onclick="
+    playGame(`heads`);
+    ">Heads</button>
+    <button onclick="
+    playGame(`tails`);
+    ">Tails</button>
+    <button onclick="
+    resetScore();
+    ">Reset Score</button>
+
+
+    <script>
+      const score = JSON.parse(localStorage.getItem(`score`)) || {wins: 0, losses: 0};
+
+      function playGame(guess) {
+      const randomNumber = Math.random();
+      const result = randomNumber < 0.5 ? 'heads' : 'tails';
+
+      console.log(`You guessed: ${guess}`);
+      console.log(`The result is: ${result}`);
+      
+      if (guess === result) {
+        console.log(`You win!`);
+        score.wins++;
+      } else {
+        console.log(`You lose!`);
+        score.losses++;
+      }
+
+        localStorage.setItem(`score`, JSON.stringify(score));
+        console.log(score);
+      }
+     
+      function resetScore() {
+          score.wins = 0;
+          score.losses = 0;
+        localStorage.removeItem(`score`);
+        console.log(`Score wurde zurückgesetzt:`, score);
+      }
+    </script>
+  </body>
+</html>

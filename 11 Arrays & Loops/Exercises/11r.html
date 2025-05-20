@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>11p Exercise</title>
+</head>
+<body>
+  
+
+  <script>
+    //11r: Create a function removeEgg(foods) that take an array of strings and returns an array where the string is 'egg' is removed. (Hint: loop through the array and check if the current element is 'egg'. If it is, use continue to skip it.)
+    // - removeEgg(['egg', 'apple', 'egg', 'banana', 'egg', 'orange']) => ['apple', 'banana', 'orange']
+
+    function removeEgg(foods) {
+      const result = [];
+      for (let i = 0; i < foods.length; i++) {
+        if (foods[i] === 'egg') {
+          continue;
+        }
+        result.push(foods[i]);
+      }
+      return result;
+    }
+
+    console.log(removeEgg(['egg', 'apple', 'egg', 'banana', 'egg', 'orange']));
+  </script>
+</body>
+</html>
