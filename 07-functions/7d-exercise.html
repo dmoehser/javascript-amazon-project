@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>7d-Exercise</title>
+</head>
+<body>
+  
+
+
+  <script>
+  /* Convert to Fahrenheit */
+    let celsius = prompt(`Enter your Celsius: `);
+    function convertToFahrenheit (celsius) {
+      return (celsius * 9/5) + 32;
+    }
+
+    let resultFahrenheit = convertToFahrenheit(celsius);
+    alert(`${celsius} celsius is ${resultFahrenheit} fahrenheit!`);
+
+    /* Convert to Celsius */
+    let fahrenheit = prompt(`Enter your fahrenheit: `);
+    function convertToCelsius (fahrenheit) {
+      return (fahrenheit - 32) * 5/9;
+    }
+
+    let resultCelsius = convertToCelsius(fahrenheit);
+    alert(`${fahrenheit} fahrenheit is ${resultCelsius} celsius! `);
+
+    
+
+  </script>
+</body>
+</html>

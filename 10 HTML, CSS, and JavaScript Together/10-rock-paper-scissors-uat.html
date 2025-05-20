@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>10-Rock-Paper-Scissors (UAT)</title>
+  <link rel="stylesheet" href="./styles/10-rock-paper-scissors-uat.css">
+</head>
+<body>
+<div class="flex-container">
+  <p class="title">Rock Paper Scissors</p>
+  <div class="game-mode">
+    <button onclick="toggleGameMode()" class="mode-button">Best of 3: OFF</button>
+  </div>
+  <div class="move-container">
+    <!-- Button Rock -->
+    <button onclick="playGame(`rock`)" class="move-button">
+      <img class="move-icon" src="./images/rock-emoji.png">
+    </button>
+
+    <!-- Button Paper -->
+    <button onclick="playGame(`paper`)" class="move-button">
+      <img src="./images/paper-emoji.png" class="move-icon">
+    </button>
+
+    <!-- Button Scissors -->
+    <button onclick="playGame(`scissors`)" class="move-button">
+      <img src="./images/scissors-emoji.png" class="move-icon">
+    </button>
+  </div>
+  <p class="js-result result"></p>
+  <p class="js-move"></p>
+  <p class="js-score score"></p>
+  <p class="js-game-status"></p>
+
+  <!-- Button Reset -->
+  <button onclick="resetScore()" class="reset-score-button">Reset Score</button>
+</div>
+
+<audio id="winSound" src="./sounds/win.mp3"></audio>
+<audio id="loseSound" src="./sounds/lose.mp3"></audio>
+<audio id="tieSound" src="./sounds/tie.mp3"></audio>
+
+<script src="./scripts/10-rock-paper-scissors-uat.js"></script>
+</body>
+</html> 

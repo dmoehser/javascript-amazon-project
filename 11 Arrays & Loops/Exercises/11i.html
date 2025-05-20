@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>11H Exercise</title>
+</head>
+<body>
+
+
+
+  <script>
+    // 11i: Create a function addNum(array, num) that takes an array of numbers and a number, and returns a new array where each number is increased by the 'number'.
+
+    function addNum(array, num) {
+      const newArray = [];
+
+      for (let i = 0; i < array.length; i++) {
+        newArray.push(array[i] + num);
+      } 
+
+      return newArray;
+    }
+
+    const nums = [1, 2, 3, 4, 5];
+    const newNums = addNum(nums, 10);
+    console.log(newNums); 
+    
+    
+  </script>
+</body> 
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>11H Exercise</title>
+</head>
+<body>
+
+
+
+  <script>
+    // 11j: Create a function addArray(array1, array2) that takes two arrays of numbers and adds each number in the arrays together.  
+
+    function addArray(array1, array2) {
+      const newArray = [];
+
+      for (let i = 0; i < array1.length; i++) {
+        newArray.push(array1[i] + array2[i]);
+      }
+
+      return newArray;
+    }
+
+    const array1 = [1, 2,  3, 4, 5];
+    const array2 = [6, 7, 8, 9, 10];
+    const newArray = addArray(array1, array2);
+    console.log(newArray);
+
+  </script>
+</body> 
+</html>
