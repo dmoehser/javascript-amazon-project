@@ -1,6 +1,7 @@
 import { cart, removeFromCart, calculateCartQuantity, updateDeliveryOption } from '../../data/cart.js';
 import { products } from '../../data/products.js';
 import { deliveryOptions } from '../../scripts/deliveryOptions.js';
+import { calculateDeliveryDate } from './deliveryOptions.js';
 import { formatCurrency } from '../utilis/money.js';
 import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js';
 import { renderCheckoutHeader } from './checkoutHeader.js';
@@ -20,7 +21,7 @@ function renderOrder() {
     
     // Find the selected delivery option
     const selectedDeliveryOption = deliveryOptions.find(option => option.id === cartItem.deliveryOptionId);
-    const deliveryDate = calculateDeliveryDate(selectedDeliveryOption.deliveryDays);
+    const deliveryDate = calculateDeliveryDate(selectedDeliveryOption);
     const formattedDeliveryDate = deliveryDate.format('dddd, MMMM D');
     
     cartHTML += `
@@ -110,7 +111,7 @@ document.querySelectorAll('.js-delivery-option').forEach((option) => {
     
     // Update the delivery date
     const selectedDeliveryOption = deliveryOptions.find(option => option.id === selectedOptionId);
-    const deliveryDate = calculateDeliveryDate(selectedDeliveryOption.deliveryDays);
+    const deliveryDate = calculateDeliveryDate(selectedDeliveryOption);
     const formattedDeliveryDate = deliveryDate.format('dddd, MMMM D');
     
     const cartItemContainer = document.querySelector(`.js-cart-item-${productId}`);
@@ -274,21 +275,11 @@ function updateCheckoutTotals() {
 // Initialize totals
 updateCheckoutTotals();
 
-// Get current date and time object
-const today = dayjs();
-
-const deliveryDate = today.add(7, 'days');
-
-function calculateDeliveryDate(deliveryDays) {
-  const today = dayjs();
-  return today.add(deliveryDays, 'days');
-}
-
 function generateDeliveryOptionsHTML(productId, selectedDeliveryOptionId) {
   let html = '';
   
   deliveryOptions.forEach((option) => {
-    const deliveryDate = calculateDeliveryDate(option.deliveryDays);
+    const deliveryDate = calculateDeliveryDate(option);
     const dateString = deliveryDate.format('dddd, MMMM D');
     const priceString = option.priceCents === 0 ? 'FREE' : `$${formatCurrency(option.priceCents)}`;
     

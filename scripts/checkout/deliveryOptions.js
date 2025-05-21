@@ -22,22 +22,22 @@ export function getDeliveryOption(deliveryOptionId) {
   return deliveryOptions.find(option => option.id === deliveryOptionId);
 }
 
-export function calculateDeliveryDate(deliveryOption) {
+export function calculateDeliveryDate(deliveryOptionOrDays) {
   let deliveryDate = dayjs();
-  let daysToAdd = deliveryOption.deliveryDays;
+  let remainingDays = typeof deliveryOptionOrDays === 'object' 
+    ? deliveryOptionOrDays.deliveryDays 
+    : deliveryOptionOrDays;
   
-  // Add the desired number of days
-  while (daysToAdd > 0) {
+  while (remainingDays > 0) {
     deliveryDate = deliveryDate.add(1, 'day');
-    daysToAdd--;
+    
+    // Only count weekdays (Monday-Friday) towards delivery days
+    if (deliveryDate.day() !== 0 && deliveryDate.day() !== 6) {
+      remainingDays--;
+    }
   }
   
-  // If the result falls on a weekend, skip to the next Monday
-  while (deliveryDate.day() === 0 || deliveryDate.day() === 6) {
-    deliveryDate = deliveryDate.add(1, 'day');
-  }
-  
-  return deliveryDate.format('dddd, MMMM D');
+  return deliveryDate;
 }
 
 function isWeekend(date) {
